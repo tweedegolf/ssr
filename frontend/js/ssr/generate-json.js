@@ -5,7 +5,7 @@ import App from '../containers/app';
 
 const generateJSON = () => {
     const isMobile = true;
-    const initialState = { isMobile };
+    const initialState = { segment0: 'animals' };
     const appString = renderToString(<App {...initialState} />);
     const page = {
         initialState,

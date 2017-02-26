@@ -30,7 +30,7 @@ const Page = (props) => {
     const ulFlatten = R.flatten(urlsAndLabels(data));
     const urlLabel = R.reduce((acc, obj) => R.merge(acc, obj), {}, ulFlatten);
     const labelUrl = invertKeyValue(urlLabel);
-    console.log(urlLabel, labelUrl);
+    // console.log(urlLabel, labelUrl);
 
     const label = 'Animals';
     const summary = 'This is the grouping together of animals with similar characteristics. Animals can be classed as either vertebrates and invertebrates';
