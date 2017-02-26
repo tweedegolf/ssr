@@ -1,6 +1,7 @@
+import 'babel-polyfill';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import App from '../app';
+import App from '../containers/app';
 
 const generateJSON = () => {
     const isMobile = true;

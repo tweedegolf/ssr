@@ -1,4 +1,5 @@
+assets/bundle.js
+composer.lock
 node_modules
 server/
 twig/cache/*
-composer.lock

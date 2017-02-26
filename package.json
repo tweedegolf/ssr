@@ -4,10 +4,10 @@
   "description": "React server side rendering with Silex",
   "main": "index.js",
   "scripts": {
-    "server": "php -S localhost:8080 -t / index.php",
+    "server": "php -S localhost:8080 -t / app.php",
     "test": "babel-node ./frontend/generate",
     "bn": "babel-node",
-    "watch-js": "watchify ./frontend/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
+    "watch": "watchify ./frontend/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,8 @@
   },
   "dependencies": {
     "babel-polyfill": "6.23.0",
+    "express": "4.14.1",
+    "ramda": "0.23.0",
     "react": "^15.2.0",
     "react-dom": "^15.2.0",
     "react-redux": "5.0.3",

@@ -1,7 +1,10 @@
 import * as constants from '../constants';
-import data from '../data.js';
 
-const initialState = { page: 'animals' };
+const initialState = {
+    label: 'Animals',
+    summary: '',
+    examples: [],
+};
 
 export default (state = initialState, action) => {
     switch (action.type) {
