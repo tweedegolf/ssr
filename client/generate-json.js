@@ -3,16 +3,16 @@ import { renderToString } from 'react-dom/server';
 import App from './main';
 import template from './template';
 
-const generate = () => {
+const generateJSON = () => {
     const isMobile = true;
     const initialState = { isMobile };
     const appString = renderToString(<App {...initialState} />);
-    const page = template({
+    const page = {
         body: appString,
         title: 'Hello World from the server',
         initialState: JSON.stringify(initialState),
-    });
-    return page;
+    };
+    return JSON.stringify(page);
 };
-// console.log('<html><head></head><body><h1>aap en beer zaten in het bos</h1></body></html>');
-console.log(generate());
+// print json to console so the page can be streamed into a Twig templage
+console.log(generateJSON());

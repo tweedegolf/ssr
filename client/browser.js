@@ -1,5 +1,8 @@
+/* eslint no-underscore-dangle: "off" */
+
 import React from 'react';
 import { render } from 'react-dom';
-import App from './index';
+import App from './main';
 
-render(<App {...window.__APP_INITIAL_STATE__} />, document.getElementById('root'));
+const initialState = global.window.__APP_INITIAL_STATE__;
+render(<App {...initialState} />, global.document.getElementById('root'));

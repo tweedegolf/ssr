@@ -1,3 +1,4 @@
 node_modules
 server/
+twig/cache/*
 composer.lock

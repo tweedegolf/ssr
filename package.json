@@ -6,11 +6,12 @@
     "scripts": {
         "server": "php -S localhost:8080 -t / index.php",
         "test": "babel-node ./client/generate",
-        "watch-js": "watchify ./src/smartsuite/apps/frontend/src/js/main.js -t [ babelify ] -o ./src/smartsuite/apps/frontend/public/js/main.js --debug --verbose"
+        "bn": "babel-node",
+        "watch-js": "watchify ./client/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Roilan/react-server-boilerplate"
+        "url": "https://tgrep.nl/prototype/ssr/"
     },
     "keywords": [
         "react",
@@ -18,15 +19,6 @@
         "reactjs",
         "silex"
     ],
-    "author": "Roilan <roilan14@gmail.com>",
-    "license": "MIT",
-    "bugs": {
-      "url": "https://github.com/Roilan/react-server-boilerplate/issues"
-    },
-    "babel": {
-        "presets": ["react", "es2015", "stage-0"]
-      },
-    "homepage": "https://github.com/Roilan/react-server-boilerplate",
     "devDependencies": {
         "babel-cli": "6.23.0",
         "babel-core": "^6.10.4",
