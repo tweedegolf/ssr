@@ -11,7 +11,7 @@ $twig = new Twig_Environment($loader, array(
 
 function generateHTML() {
     // $path = __DIR__.'/../client/generate.js';
-    $process = new Process('./node_modules/.bin/babel-node ./client/generate-html.js');
+    $process = new Process('./node_modules/.bin/babel-node ./client/js/generate/generate-html.js');
     $process->run();
 
     if (!$process->isSuccessful()) {
@@ -22,7 +22,7 @@ function generateHTML() {
 
 function generateJSON() {
     // $path = __DIR__.'/../client/generate.js';
-    $process = new Process('./node_modules/.bin/babel-node ./client/generate-json.js');
+    $process = new Process('./node_modules/.bin/babel-node ./client/js/generate/generate-json.js');
     $process->run();
 
     if (!$process->isSuccessful()) {
