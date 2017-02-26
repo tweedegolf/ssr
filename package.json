@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "server": "php -S localhost:8080 -t / index.php",
-    "test": "babel-node ./client/generate",
+    "test": "babel-node ./frontend/generate",
     "bn": "babel-node",
-    "watch-js": "watchify ./client/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
+    "watch-js": "watchify ./frontend/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
   },
   "repository": {
     "type": "git",
@@ -37,11 +37,13 @@
     "watchify": "3.9.0"
   },
   "dependencies": {
+    "babel-polyfill": "6.23.0",
     "react": "^15.2.0",
     "react-dom": "^15.2.0",
     "react-redux": "5.0.3",
     "react-router5": "4.0.1",
     "redux": "3.6.0",
+    "redux-logger": "2.8.1",
     "router5": "4.5.1"
   }
 }
