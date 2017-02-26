@@ -4,13 +4,12 @@ import { renderToString } from 'react-dom/server';
 import App from '../containers/app';
 
 const generateJSON = () => {
-    const isMobile = true;
     const initialState = { segment0: 'animals' };
     const appString = renderToString(<App {...initialState} />);
     const page = {
         initialState,
         body: appString,
-        title: 'Hello World from the server',
+        title: 'ssr [animals]',
     };
     return JSON.stringify(page);
 };
