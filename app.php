@@ -31,7 +31,7 @@ function generateJSON() {
     return json_decode($process->getOutput(), true);
 }
 
-function generatePage($segment0, $segment1 = 'NA', $segment2 = 'NA', $segment3 = 'NA') {
+function generatePage($segment0 = 'animals', $segment1 = 'NA', $segment2 = 'NA', $segment3 = 'NA') {
     // echo "$segment0 $segment1 $segment2 $segment3";
     $process = new Process("./node_modules/.bin/babel-node ./frontend/js/ssr/generate-page.js $segment0 $segment1 $segment2 $segment3");
     $process->run();
@@ -53,7 +53,12 @@ $app = new Silex\Application();
 // });
 
 
-// app
+// csr
+$app->get('/csr', function ($segment0) use ($app, $twig) {
+    return $twig->render('index.html');
+});
+
+// ssr
 $app->get('/ssr/{segment0}', function ($segment0) use ($app, $twig) {
     return $twig->render('test1.html', generatePage($segment0));
 });

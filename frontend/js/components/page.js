@@ -14,11 +14,6 @@ const getCategories = categories => R.map((cat) => {
     return cat;
 }, categories);
 
-const getSiblings = (data) => {
-
-};
-
-
 const Page = (props) => {
     const categories = R.flatten(getCategories(data));
     const labels = R.map(cat => cat.label, categories);
@@ -29,7 +24,12 @@ const Page = (props) => {
 
     const segments = R.filter(val => R.isNil(val) === false && val !== 'NA', R.values(props));
     const segment = R.last(segments);
-    const path = R.reduce((acc, val) => `${acc}/${val}`, '/ssr', segments);
+    const [path, links] = R.reduce((acc, val) =>
+        [`${acc[0]}/${val}`, [...acc[1], <a href={`${acc[0]}/${val}`}>{val}</a>]], ['/ssr', []], segments);
+
+    // console.log(path);
+    // console.log(links);
+
     const numSegments = R.length(segments);
     const label = urlLabel[segment];
     const catData = categoriesByLabel[label];
@@ -50,38 +50,22 @@ const Page = (props) => {
         </li>), subcategories)}</ul>);
     }
 
-    let linkToParent = null;
-    if (numSegments > 1) {
-        linkToParent = (<span>Parent:&nbsp;<a
-          href={R.reduce((acc, val) => `${acc}/${val}`, '/ssr', R.dropLast(1, segments))}
-        >
-            {segments[numSegments - 2]}
-        </a></span>);
-        // const tmp = mapIndexed((val, i) => {
-        //     if (i !== numSegments - 2) {
-        //         return val;
-        //     }
-        //     return linkToParent;
-        // }, segments);
-    }
-
-    let next = null;
-    let prev = null;
-    // console.log(parentCatLabel);
-    const siblings = categoriesByLabel[parentCatLabel].examples;
-    if (R.isNil(siblings) === false) {
-        const numSiblings = R.length(siblings);
-        // console.log(numSiblings);
-    }
+    const createBreadCrumbs = (_links) => {
+        const numLinks = R.length(_links);
+        const elements = mapIndexed((link, i) => {
+            if (i < numLinks - 1) {
+                return <span key={`segment_${i}`}>{link}/</span>;
+            }
+            return <span key={`segment_${i}`}>{segments[i]}/</span>;
+        }, _links);
+        return <span className="breadcrumbs">/ssr/{elements}</span>;
+    };
 
     return (<div>
-        <pre>{path}</pre>
-        {linkToParent}
+        <pre>{createBreadCrumbs(links)}</pre>
         <h1>{label}</h1>
         <p>{summary}</p>
         {list}
-        {next}
-        {prev}
     </div>);
 };
 
@@ -108,3 +92,29 @@ export default Page;
     // const segments = R.map(key => props[key], R.keys(props));
     // const pageData = data[R.last[segments]]
     // const reversedSegments = R.reverse(segments);
+
+/*
+    const getSiblings = (data) => {
+
+    };
+
+
+    let next = null;
+    let prev = null;
+    // console.log(parentCatLabel);
+    const siblings = categoriesByLabel[parentCatLabel].examples;
+    if (R.isNil(siblings) === false) {
+        const numSiblings = R.length(siblings);
+        // console.log(numSiblings);
+    }
+        {next}
+        {prev}
+*/
+
+
+        // const tmp = mapIndexed((val, i) => {
+        //     if (i !== numSegments - 2) {
+        //         return val;
+        //     }
+        //     return linkToParent;
+        // }, segments);

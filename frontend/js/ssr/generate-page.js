@@ -1,19 +1,27 @@
 import 'babel-polyfill';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+import R from 'ramda';
 import App from '../containers/app';
 
 const generatePage = () => {
-    const segment0 = process.argv[2];
-    const segment1 = process.argv[3];
-    const segment2 = process.argv[4];
-    const segment3 = process.argv[5];
-    const initialState = { segment0, segment1, segment2, segment3 };
+    let i = 2;
+    let s = 0;
+    const initialState = {};
+    while (i <= 5) {
+        const segment = process.argv[i];
+        if (R.isNil(segment) === false && segment !== 'NA') {
+            initialState[`segment${s}`] = segment;
+            s += 1;
+        }
+        i += 1;
+    }
+    const path = R.reduce((acc, val) => `${acc}/${val}`, '', R.values(initialState));
     const appString = renderToString(<App {...initialState} />);
     const page = {
         initialState,
         body: appString,
-        title: `ssr [${segment0}/${segment1}/${segment2}/${segment3}]`,
+        title: `/ssr${path}`,
     };
     return JSON.stringify(page);
 };

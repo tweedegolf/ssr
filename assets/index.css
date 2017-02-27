@@ -1,0 +1,9 @@
+html, body, p {
+    font-family: sans;
+    font-size: 1em;
+}
+
+.breadcrumbs > span > a {
+    // text-decoration: none;
+    color: black;
+}
