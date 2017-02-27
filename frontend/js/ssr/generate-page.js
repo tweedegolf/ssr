@@ -13,7 +13,7 @@ const generatePage = () => {
     const page = {
         initialState,
         body: appString,
-        title: `ssr [${segment0}/${segment1}/${segment2}]`,
+        title: `ssr [${segment0}/${segment1}/${segment2}/${segment3}]`,
     };
     return JSON.stringify(page);
 };

@@ -31,8 +31,9 @@ function generateJSON() {
     return json_decode($process->getOutput(), true);
 }
 
-function generatePage($segment1, $segment2) {
-    $process = new Process("./node_modules/.bin/babel-node ./frontend/js/ssr/generate-page.js $segment1 $segment2");
+function generatePage($segment0, $segment1 = 'NA', $segment2 = 'NA', $segment3 = 'NA') {
+    // echo "$segment0 $segment1 $segment2 $segment3";
+    $process = new Process("./node_modules/.bin/babel-node ./frontend/js/ssr/generate-page.js $segment0 $segment1 $segment2 $segment3");
     $process->run();
 
     if (!$process->isSuccessful()) {
@@ -43,27 +44,40 @@ function generatePage($segment1, $segment2) {
 
 $app = new Silex\Application();
 
-$app->get('/', function () use ($app, $twig) {
-    return $twig->render('index.html');
+// $app->get('/', function () use ($app, $twig) {
+//     return $twig->render('index.html');
+// });
+
+// $app->get('/hello/{name}', function ($name) use ($app) {
+//     return 'Hello '.$app->escape($name);
+// });
+
+
+// app
+$app->get('/ssr/{segment0}', function ($segment0) use ($app, $twig) {
+    return $twig->render('test1.html', generatePage($segment0));
 });
 
-$app->get('/hello/{name}', function ($name) use ($app) {
-    return 'Hello '.$app->escape($name);
+$app->get('/ssr/{segment0}/{segment1}', function ($segment0, $segment1) use ($app, $twig) {
+    return $twig->render('test1.html', generatePage($segment0, $segment1));
 });
 
-// test html
-$app->get('/ssr/html', function () use ($app) {
-    return generateHTML();
+$app->get('/ssr/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app, $twig) {
+    return $twig->render('test1.html', generatePage($segment0, $segment1, $segment2));
+});
+
+$app->get('/ssr/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app, $twig) {
+    return $twig->render('test1.html', generatePage($segment0, $segment1, $segment2, $segment3));
 });
 
 // test json
-$app->get('/ssr/json', function () use ($app, $twig) {
-    return  $twig->render('test1.html', generateJSON());
-});
+// $app->get('/ssr/json', function () use ($app, $twig) {
+//     return  $twig->render('test1.html', generateJSON());
+// });
 
-// app
-$app->get('/ssr/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app, $twig) {
-    return  $twig->render('test1.html', generatePage($segment0, $segment1, $segment2, $segment3));
-});
+// // test html
+// $app->get('/ssr/html', function () use ($app) {
+//     return generateHTML();
+// });
 
 $app->run();

@@ -5,5 +5,9 @@ import { render } from 'react-dom';
 import App from './containers/app';
 
 // const initialState = global.window.__APP_INITIAL_STATE__;
-const initialState = { segment0: 'animals' };
+const initialState = {
+    segment0: 'animals',
+    segment1: 'vertebrates',
+    segment2: 'reptiles',
+};
 render(<App {...initialState} />, global.document.getElementById('root'));

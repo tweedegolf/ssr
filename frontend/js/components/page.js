@@ -4,55 +4,84 @@ import data from '../data';
 import { fixedEncodeURIComponent } from '../util/convert';
 
 const mapIndexed = R.addIndex(R.map);
-const arrayToObject = (arr) => {
-    const keysRaw = mapIndexed((val, i) => { return i % 2 === 0 ? val : null; }, arr);
-    const valuesRaw = mapIndexed((val, i) => { return i % 2 === 1 ? val : null; }, arr);
-    const keys = R.filter(val => R.isNil(val) === false, keysRaw);
-    const values = R.filter(val => R.isNil(val) === false, valuesRaw);
-    // console.log(keys, values);
-    const keyValue = {};
-    mapIndexed((key, i) => { keyValue[key] = values[i]; }, keys);
-    return keyValue;
-};
 const invertKeyValue = obj => R.reduce((acc, key) => R.merge(acc, { [obj[key]]: key }), {}, R.keys(obj));
 
-const urlsAndLabels = categories => R.map((cat) => {
-    const url = fixedEncodeURIComponent(cat.label);
+const getCategories = categories => R.map((cat) => {
     const subs = cat.subcategories;
     if (R.isNil(subs) === false) {
-        // return {
-        //     [url]: cat.label,
-        //     ...urlsAndLabels(subs),
-        // };
-        // return R.merge(urlsAndLabels(subs), { [url]: cat.label });
-        return [url, cat.label, urlsAndLabels(subs)];
+        return [cat, ...getCategories(subs)];
     }
-    // return { [url]: cat.label };
-    return [url, cat.label];
+    return cat;
 }, categories);
+
+const getSiblings = (data) => {
+
+};
 
 
 const Page = (props) => {
-    // console.log(urlsAndLabels(data));
-    // console.log(R.flatten(urlsAndLabels(data)));
-    const ulFlatten = R.flatten(urlsAndLabels(data));
-    // const urlLabel = R.reduce((acc, obj) => R.merge(acc, obj), {}, ulFlatten);
-    const urlLabel = arrayToObject(ulFlatten);
-    const labelUrl = invertKeyValue(urlLabel);
-    // console.log(urlLabel, labelUrl);
+    const categories = R.flatten(getCategories(data));
+    const labels = R.map(cat => cat.label, categories);
+    const labelUrl = R.reduce((acc, val) => R.merge(acc, { [val]: fixedEncodeURIComponent(val) }), {}, labels);
+    const urlLabel = invertKeyValue(labelUrl);
+    const categoriesByLabel = R.reduce((acc, cat) => R.merge(acc, { [cat.label]: cat }), {}, categories);
+    // console.log(categoriesByLabel, labelUrl, urlLabel);
 
-    const label = urlLabel[props.segment0];
-    // TODO: get data from loop
-    const summary = labelUrl[props.segment0]; // data[labelUrl[props.segment0]].summary;
-    const examples = [];
+    const segments = R.filter(val => R.isNil(val) === false && val !== 'NA', R.values(props));
+    const segment = R.last(segments);
+    const path = R.reduce((acc, val) => `${acc}/${val}`, '/ssr', segments);
+    const numSegments = R.length(segments);
+    const label = urlLabel[segment];
+    const catData = categoriesByLabel[label];
+    const parentCatLabel = urlLabel[segments[numSegments - 1]];
+    const summary = catData.summary;
+    const examples = catData.examples;
+    const subcategories = catData.subcategories;
+
+    let list = null;
+    if (R.isNil(examples) === false && R.length(examples) > 0) {
+        list = (<div>
+            <span>Examples:</span>
+            <ul>{R.map(item => <li key={item}>{item}</li>, examples)}</ul>
+        </div>);
+    } else if (R.isNil(subcategories) === false) {
+        list = (<ul>{R.map(item => (<li key={item.label}>
+            <a href={`${path}/${fixedEncodeURIComponent(item.label)}`}>{item.label}</a>
+        </li>), subcategories)}</ul>);
+    }
+
+    let linkToParent = null;
+    if (numSegments > 1) {
+        linkToParent = (<span>Parent:&nbsp;<a
+          href={R.reduce((acc, val) => `${acc}/${val}`, '/ssr', R.dropLast(1, segments))}
+        >
+            {segments[numSegments - 2]}
+        </a></span>);
+        // const tmp = mapIndexed((val, i) => {
+        //     if (i !== numSegments - 2) {
+        //         return val;
+        //     }
+        //     return linkToParent;
+        // }, segments);
+    }
+
+    let next = null;
+    let prev = null;
+    // console.log(parentCatLabel);
+    const siblings = categoriesByLabel[parentCatLabel].examples;
+    if (R.isNil(siblings) === false) {
+        const numSiblings = R.length(siblings);
+        // console.log(numSiblings);
+    }
 
     return (<div>
-        <pre>{props.segment0}</pre>
+        <pre>{path}</pre>
+        {linkToParent}
         <h1>{label}</h1>
         <p>{summary}</p>
-        <ul>{examples}</ul>
-        <button>up</button>
-        <button>down</button>
+        {list}
+        {next}
+        {prev}
     </div>);
 };
 
@@ -64,9 +93,9 @@ Page.propTypes = {
 };
 
 Page.defaultProps = {
-    segment1: '',
-    segment2: '',
-    segment3: '',
+    segment1: null,
+    segment2: null,
+    segment3: null,
 };
 
 export default Page;
