@@ -1,7 +1,24 @@
 import 'babel-polyfill';
-import React from 'react';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import Page from '../components/page';
+import pageDataReducer from '../reducers/page_data';
 
-const App = props => <Page {...props} />;
+class App extends Component {
 
-export default App;
+    static getStores() {
+        return [pageDataReducer];
+    }
+
+    static calculateState(prevState) {
+        return {
+            pageData: pageDataReducer.getState(),
+        };
+    }
+
+    render() {
+        return <Page {...this.state.pageData} />;
+    }
+}
+
+export default Container.create(App);
