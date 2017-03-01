@@ -28,22 +28,42 @@ class Store extends ReduceStore {
         this.urlLabel = invertKeyValue(this.labelUrl);
         this.categoriesByLabel = R.reduce((acc, cat) =>
             R.merge(acc, { [cat.label]: cat }), {}, this.categories);
-        // console.log(this.categoriesByLabel, this.labelUrl, this.urlLabel);
-        return this.createNewState({}, { segments: { segment0: 'animals' } });
+        this.examplesByLabel = R.reduce((acc, cat) => {
+            const examples = cat.examples;
+            if (R.isNil(examples) === false) {
+                const byLabel = R.reduce((acc1, example) =>
+                    R.merge(acc1, { [example]: fixedEncodeURIComponent(example) }), {}, examples);
+                return R.merge(acc, byLabel);
+            }
+            return acc;
+        }, {}, this.categories);
+        // console.log(this.categoriesByLabel, this.examplesByLabel, this.labelUrl, this.urlLabel);
+        return this.createNewState({}, { segments: {
+            segment0: 'animals',
+            segment1: 'vertebrates',
+            segment2: 'reptiles',
+            // segment3: 'snake',
+        } });
     }
 
     createNewState(state, action) {
         const mergedSegments = { ...state.segments, ...action.segments };
         const pathSegments = R.filter(val => R.isNil(val) === false && val !== 'NA', R.values(mergedSegments));
         const segment = R.last(pathSegments);
-        const label = this.urlLabel[segment];
         const [path, segments] = R.reduce((acc, val) =>
             [`${acc[0]}/${val}`, [...acc[1], { link: `${acc[0]}/${val}`, label: val }]], ['/ssr', []], pathSegments);
+
+        let label = this.urlLabel[segment];
+        let tmpData = this.categoriesByLabel[label];
+        if (R.isNil(label)) {
+            label = this.examplesByLabel[segment];
+            tmpData = {};
+        }
         const {
             summary,
-            subcategories,
+            subcategories = [],
             examples,
-        } = this.categoriesByLabel[label];
+        } = tmpData;
 
         return {
             path,

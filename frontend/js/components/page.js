@@ -20,7 +20,7 @@ const Page = (props) => {
             <span>Examples:</span>
             <ul>{R.map(item => <li key={item}>{item}</li>, examples)}</ul>
         </div>);
-    } else if (R.isNil(subcategories) === false) {
+    } else if (R.isNil(subcategories) === false && R.length(subcategories) > 0) {
         list = (<ul>{R.map(data => (<li key={data.label}>
             <a href={`${path}/${data.link}`}>{data.label}</a>
         </li>), subcategories)}</ul>);
@@ -29,7 +29,7 @@ const Page = (props) => {
     const numLinks = R.length(segments);
     const breadCrumbs = mapIndexed((data, i) => {
         if (i < numLinks - 1) {
-            return <span key={`segment_${i}`}><a href={data.link}>{data.label}</a></span>;
+            return <span key={`segment_${i}`}><a href={data.link}>{data.label}</a>/</span>;
         }
         return <span key={`segment_${i}`}>{data.label}</span>;
     }, segments);
