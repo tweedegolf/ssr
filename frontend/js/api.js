@@ -54,9 +54,9 @@ const createRoutes = (segment0) => {
 };
 
 const getBreadCrumbLinks = (route, type) => {
-    const r = route[0] === '/' ? route.substring(1) : route;
-    const segments = R.compose(R.tail, R.split('/'))(r);
-    console.log(r, segments);
+    const rt = route[0] === '/' ? route.substring(1) : route;
+    const segments = R.compose(R.tail, R.split('/'))(rt);
+    // console.log(rt, segments);
     if (type === 'ssr') {
         return R.reduce((acc, val) =>
             [`${acc[0]}/${val}`, [...acc[1], { link: `${acc[0]}/${val}`, label: val }]], ['/ssr', []], segments);
@@ -67,9 +67,8 @@ const getBreadCrumbLinks = (route, type) => {
         const path = R.find(R.propEq('name', label))(routes).path;
         const breadCrumbs = R.map((segment) => {
             const l = labelByUrl[segment];
-            console.log(l);
             const r = R.find(R.propEq('name', l))(routes);
-            return { link: r.name, label: segment };
+            return { link: r.name, path: r.path, label: segment };
         }, segments);
         // console.log(breadCrumbs);
         return [path, breadCrumbs];

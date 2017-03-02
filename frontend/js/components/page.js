@@ -45,7 +45,7 @@ const Page = (props) => {
             // console.log(crumb);
             const p = {
                 onClick: () => {
-                    updateRouter({ route: crumb.link });
+                    updateRouter({ route: crumb.link, path: crumb.path });
                 },
             };
             if (i < numLinks - 1) {

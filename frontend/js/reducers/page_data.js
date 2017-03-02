@@ -20,6 +20,7 @@ class Store extends ReduceStore {
 
     createNewState(state, action) {
         const route = action.route;
+        console.log(route);
         const segment = R.compose(R.last, R.split('/'))(route);
         console.log(route, segment);
         const [path, breadCrumbs] = api.getBreadCrumbLinks(route, 'csr');
@@ -51,9 +52,7 @@ class Store extends ReduceStore {
     reduce(state, action) {
         switch (action.type) {
         case 'update_router':
-            const route = R.find(R.propEq('name', action.payload.route))(api.createRoutes('csr')).path;
-            // console.log(action.payload.route, route);
-            return this.createNewState(state, { route });
+            return this.createNewState(state, { route: action.payload.path });
 
         default:
             return state;

@@ -3,16 +3,19 @@ import getRouter from './get_router';
 
 const router = getRouter();
 
-export const updateRouter = ({ route }) => {
-    router.navigate(route, {}, {}, () => {
-        // console.log(route);
-        AppDispatcher.dispatch({
-            type: 'update_router',
-            payload: {
-                route,
-            },
-        });
+export const updateStateFromRouter = (route) => {
+    AppDispatcher.dispatch({
+        type: 'update_router',
+        payload: {
+            ...route,
+        },
     });
 };
 
-export const aap = 'konijn';
+export const updateRouter = (route) => {
+    // console.log(router.getState(), route);
+    router.navigate(route, () => {
+        updateStateFromRouter(route);
+    });
+};
+
