@@ -6,7 +6,6 @@ const mapIndexed = R.addIndex(R.map);
 
 const Page = (props) => {
     const {
-        path,
         label,
         summary,
         examples,
@@ -22,9 +21,17 @@ const Page = (props) => {
             <ul>{R.map(item => <li key={item}>{item}</li>, examples)}</ul>
         </div>);
     } else if (R.isNil(subcategoryLinks) === false && R.length(subcategoryLinks) > 0) {
-        list = (<ul>{R.map(data => (<li key={data.label}>
-            <a href={`${path}/${data.link}`}>{data.label}</a>
-        </li>), subcategoryLinks)}</ul>);
+        list = (<ul>{R.map((data) => {
+            const p = {
+                onClick: () => { updateRouter({ name: data.name, path: data.path }); },
+            };
+            return (<li key={data.label}>
+                <a {...p}>{data.label}</a>
+            </li>);
+        }, subcategoryLinks)}</ul>);
+        // list = (<ul>{R.map(data => (<li key={data.label}>
+        //     <a href={data.link}>{data.label}</a>
+        // </li>), subcategoryLinks)}</ul>);
     }
 
     // const createBreadCrumbs = () => {
@@ -38,14 +45,13 @@ const Page = (props) => {
     //     return <span className="breadcrumbs">/ssr/{crumbs}</span>;
     // };
 
-
     const createBreadCrumbs = () => {
         const numLinks = R.length(breadCrumbs);
         const crumbs = mapIndexed((crumb, i) => {
             // console.log(crumb);
             const p = {
                 onClick: () => {
-                    updateRouter({ route: crumb.link, path: crumb.path });
+                    updateRouter({ name: crumb.name, path: crumb.path });
                 },
             };
             if (i < numLinks - 1) {
@@ -75,14 +81,12 @@ Page.propTypes = {
         link: PropTypes.string,
         label: PropTypes.string,
     })),
-    path: PropTypes.string,
     label: PropTypes.string,
     summary: PropTypes.string,
     examples: PropTypes.arrayOf(PropTypes.string),
 };
 
 Page.defaultProps = {
-    path: null,
     label: null,
     links: null,
     summary: null,

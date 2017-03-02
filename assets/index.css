@@ -3,7 +3,11 @@ html, body, p {
     font-size: 1em;
 }
 
-.breadcrumbs > span > a {
-    // text-decoration: none;
-    color: black;
+a {
+    text-decoration: underline;
 }
+
+// .breadcrumbs > span > a {
+//     // text-decoration: none;
+//     color: black;
+// }
