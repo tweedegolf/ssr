@@ -3,8 +3,9 @@
 import { ReduceStore } from 'flux/utils';
 import R from 'ramda';
 import AppDispatcher from '../flux/app_dispatcher';
-import api from '../api';
+import getApi from '../api';
 
+const api = getApi();
 
     // let route = _route;
     // if (_route[0] === '/') {
@@ -23,7 +24,7 @@ class Store extends ReduceStore {
         console.log(route);
         const segment = R.compose(R.last, R.split('/'))(route);
         console.log(route, segment);
-        const [path, breadCrumbs] = api.getBreadCrumbLinks(route, 'csr');
+        const [path, breadCrumbs] = api.getBreadCrumbLinks(route);
 
         let label = api.labelByUrl[segment];
         let tmpData = api.categoriesByLabel[label];
@@ -36,7 +37,7 @@ class Store extends ReduceStore {
             examples,
         } = tmpData;
 
-        const subcategoryLinks = api.getSubCategoryLinks(label, 'ssr');
+        const subcategoryLinks = api.getSubCategoryLinks(label);
 
         return {
             route,
