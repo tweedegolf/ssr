@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import R from 'ramda';
+import { updateRouter } from '../actions';
 
 const mapIndexed = R.addIndex(R.map);
 
@@ -9,8 +10,8 @@ const Page = (props) => {
         label,
         summary,
         examples,
-        segments,
-        subcategories,
+        breadCrumbs,
+        subcategoryLinks,
     } = props;
 
 
@@ -20,23 +21,44 @@ const Page = (props) => {
             <span>Examples:</span>
             <ul>{R.map(item => <li key={item}>{item}</li>, examples)}</ul>
         </div>);
-    } else if (R.isNil(subcategories) === false && R.length(subcategories) > 0) {
+    } else if (R.isNil(subcategoryLinks) === false && R.length(subcategoryLinks) > 0) {
         list = (<ul>{R.map(data => (<li key={data.label}>
             <a href={`${path}/${data.link}`}>{data.label}</a>
-        </li>), subcategories)}</ul>);
+        </li>), subcategoryLinks)}</ul>);
     }
 
-    const numLinks = R.length(segments);
-    const breadCrumbs = mapIndexed((data, i) => {
-        if (i < numLinks - 1) {
-            return <span key={`segment_${i}`}><a href={data.link}>{data.label}</a>/</span>;
-        }
-        return <span key={`segment_${i}`}>{data.label}</span>;
-    }, segments);
+    // const createBreadCrumbs = () => {
+    //     const numLinks = R.length(breadCrumbs);
+    //     const crumbs = mapIndexed((data, i) => {
+    //         if (i < numLinks - 1) {
+    //             return <span key={`segment_${i}`}><a href={data.link}>{data.label}</a>/</span>;
+    //         }
+    //         return <span key={`segment_${i}`}>{data.label}</span>;
+    //     }, breadCrumbs);
+    //     return <span className="breadcrumbs">/ssr/{crumbs}</span>;
+    // };
+
+
+    const createBreadCrumbs = () => {
+        const numLinks = R.length(breadCrumbs);
+        const crumbs = mapIndexed((crumb, i) => {
+            // console.log(crumb);
+            const p = {
+                onClick: () => {
+                    updateRouter({ route: crumb.link });
+                },
+            };
+            if (i < numLinks - 1) {
+                return <span key={`segment_${i}`}><a {...p}>{crumb.label}</a>/</span>;
+            }
+            return <span key={`segment_${i}`}>{crumb.label}</span>;
+        }, breadCrumbs);
+        return <span className="breadcrumbs">/csr/{crumbs}</span>;
+    };
 
     return (<div>
         <pre>
-            <span className="breadcrumbs">/ssr/{breadCrumbs}</span>
+            {createBreadCrumbs()}
         </pre>
         <h1>{label}</h1>
         <p>{summary}</p>
@@ -45,11 +67,11 @@ const Page = (props) => {
 };
 
 Page.propTypes = {
-    segments: PropTypes.arrayOf(PropTypes.shape({
+    breadCrumbs: PropTypes.arrayOf(PropTypes.shape({
         link: PropTypes.string,
         label: PropTypes.string,
     })).isRequired,
-    subcategories: PropTypes.arrayOf(PropTypes.shape({
+    subcategoryLinks: PropTypes.arrayOf(PropTypes.shape({
         link: PropTypes.string,
         label: PropTypes.string,
     })),
@@ -65,7 +87,7 @@ Page.defaultProps = {
     links: null,
     summary: null,
     examples: null,
-    subcategories: null,
+    subcategoryLinks: null,
 };
 
 export default Page;

@@ -3,83 +3,57 @@
 import { ReduceStore } from 'flux/utils';
 import R from 'ramda';
 import AppDispatcher from '../flux/app_dispatcher';
-import data from '../data';
-import { fixedEncodeURIComponent } from '../util/convert';
+import api from '../api';
 
-// const initialState = global.window.__APP_INITIAL_STATE__;
 
-const invertKeyValue = obj => R.reduce((acc, key) =>
-    R.merge(acc, { [obj[key]]: key }), {}, R.keys(obj));
+    // let route = _route;
+    // if (_route[0] === '/') {
+    //     route = _route.substring(1);
+    // }
 
-const getCategories = categories => R.map((cat) => {
-    const subs = cat.subcategories;
-    if (R.isNil(subs) === false) {
-        return [cat, ...getCategories(subs)];
-    }
-    return cat;
-}, categories);
 
 class Store extends ReduceStore {
     getInitialState() {
-        this.categories = R.flatten(getCategories(data));
-        this.labels = R.map(cat => cat.label, this.categories);
-        this.labelUrl = R.reduce((acc, val) =>
-            R.merge(acc, { [val]: fixedEncodeURIComponent(val) }), {}, this.labels);
-        this.urlLabel = invertKeyValue(this.labelUrl);
-        this.categoriesByLabel = R.reduce((acc, cat) =>
-            R.merge(acc, { [cat.label]: cat }), {}, this.categories);
-        this.examplesByLabel = R.reduce((acc, cat) => {
-            const examples = cat.examples;
-            if (R.isNil(examples) === false) {
-                const byLabel = R.reduce((acc1, example) =>
-                    R.merge(acc1, { [example]: fixedEncodeURIComponent(example) }), {}, examples);
-                return R.merge(acc, byLabel);
-            }
-            return acc;
-        }, {}, this.categories);
-        // console.log(this.categoriesByLabel, this.examplesByLabel, this.labelUrl, this.urlLabel);
-        return this.createNewState({}, { segments: {
-            segment0: 'animals',
-            segment1: 'vertebrates',
-            segment2: 'reptiles',
-            // segment3: 'snake',
-        } });
+        return this.createNewState({}, { route: 'csr/animals/vertebrates' });
+        // return this.createNewState({}, global.window.__APP_INITIAL_STATE__);
     }
 
     createNewState(state, action) {
-        const mergedSegments = { ...state.segments, ...action.segments };
-        const pathSegments = R.filter(val => R.isNil(val) === false && val !== 'NA', R.values(mergedSegments));
-        const segment = R.last(pathSegments);
-        const [path, segments] = R.reduce((acc, val) =>
-            [`${acc[0]}/${val}`, [...acc[1], { link: `${acc[0]}/${val}`, label: val }]], ['/ssr', []], pathSegments);
+        const route = action.route;
+        const segment = R.compose(R.last, R.split('/'))(route);
+        console.log(route, segment);
+        const [path, breadCrumbs] = api.getBreadCrumbLinks(route, 'csr');
 
-        let label = this.urlLabel[segment];
-        let tmpData = this.categoriesByLabel[label];
+        let label = api.labelByUrl[segment];
+        let tmpData = api.categoriesByLabel[label];
         if (R.isNil(label)) {
-            label = this.examplesByLabel[segment];
+            label = api.examplesByLabel[segment];
             tmpData = {};
         }
         const {
             summary,
-            subcategories = [],
             examples,
         } = tmpData;
 
+        const subcategoryLinks = api.getSubCategoryLinks(label, 'ssr');
+
         return {
+            route,
             path,
             label,
             summary,
-            segments,
             examples,
-            subcategories: R.map(val =>
-                ({ label: val.label, link: fixedEncodeURIComponent(val.label) }), subcategories),
+            breadCrumbs,
+            subcategoryLinks,
         };
     }
 
     reduce(state, action) {
         switch (action.type) {
-        case 'change':
-            return this.createNewState(state, action);
+        case 'update_router':
+            const route = R.find(R.propEq('name', action.payload.route))(api.createRoutes('csr')).path;
+            // console.log(action.payload.route, route);
+            return this.createNewState(state, { route });
 
         default:
             return state;

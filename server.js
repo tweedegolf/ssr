@@ -12,10 +12,6 @@ const app = express();
 // serve static assets normally
 app.use(express.static(path.join(__dirname, '')));
 
-// app.use('*/index.html', (request, response) => {
-//     response.sendFile(path.join(__dirname, 'index.html'));
-// });
-
 app.use('*/assets/index.css', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', 'index.css'));
 });
@@ -24,5 +20,10 @@ app.get('*/assets/bundle.js', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', 'bundle.js'));
 });
 
+// handle every other route with index.html
+app.get('*', (request, response) => {
+    response.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(port);
-console.log('server started on port ' + port);
+console.log(`server started on port ${port}`);
