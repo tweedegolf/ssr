@@ -3,3 +3,4 @@ composer.lock
 node_modules
 server/
 twig/cache/*
+npm-debug.log

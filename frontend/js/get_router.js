@@ -9,7 +9,7 @@ let router = null;
 export default function () {
     if (R.isNil(router)) {
         router = createRouter()
-        .usePlugin(loggerPlugin)
+        // .usePlugin(loggerPlugin)
         .usePlugin(browserPlugin({
             useHash: false,
         }));

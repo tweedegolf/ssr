@@ -14,6 +14,7 @@ export const updateStateFromRouter = (route) => {
         examples,
     } = api.getCategory(label) || {};
     const subcategoryLinks = api.getSubCategoryLinks(path, label);
+    console.log('[action]', label, breadCrumbs[0], subcategoryLinks[0]);
 
     AppDispatcher.dispatch({
         type: 'update_router',

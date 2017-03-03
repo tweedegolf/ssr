@@ -1,30 +1,26 @@
 import 'babel-polyfill';
 import React from 'react';
-import { renderToString } from 'react-dom/server';
 import R from 'ramda';
+import { renderToString } from 'react-dom/server';
 import App from '../containers/app';
+import getRouter from '../get_router';
+import { initApi } from '../api';
+import { updateStateFromRouter } from '../actions';
 
-const generatePage = (path) => {
-    let i = 2;
-    let s = 0;
-    const initialState = {};
-    while (i <= 5) {
-        const segment = process.argv[i];
-        if (R.isNil(segment) === false && segment !== 'NA') {
-            initialState[`segment${s}`] = segment;
-            s += 1;
+const generatePage = path => new Promise((resolve, reject) => {
+    const router = getRouter();
+    const api = initApi('ssr');
+    router.add(api.routes);
+    // console.log(R.map(route => route.name, api.routes));
+    router.start(path, (error, state) => {
+        if (error === null) {
+            updateStateFromRouter(state);
+            const appString = renderToString(<App />);
+            resolve({ appString, initialState: state });
+        } else {
+            reject(error);
         }
-        i += 1;
-    }
-    const path = R.reduce((acc, val) => `${acc}/${val}`, '', R.values(initialState));
-    const appString = renderToString(<App {...initialState} />);
-    const page = {
-        initialState,
-        body: appString,
-        title: `/ssr${path}`,
-    };
-    return JSON.stringify(page);
-};
-// print html to console so the page can be streamed to Silex
-// console.log(generatePage());
-esport default generatePage;
+    });
+});
+
+export default generatePage;

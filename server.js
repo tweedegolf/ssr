@@ -1,15 +1,11 @@
-/* eslint comma-dangle: "off" */
-
+import express from 'express';
+import path from 'path';
+// import cors from 'cors';
 import generatePage from './frontend/js/ssr/generate_page';
 import template from './frontend/js/ssr/template';
 
-const express = require('express');
-const path = require('path');
-// const cors = require('cors');
-
 const port = process.env.PORT || 8080;
 const app = express();
-
 
 // app.use(cors());
 
@@ -30,13 +26,20 @@ app.get('/csr/*', (request, response) => {
 });
 
 app.get('/ssr/*', (request, response) => {
-    const appString = generatePage(request.originalUrl);
-    const initialState = {};
-    response.send(template({
-        body: appString,
-        title: 'Hello World from the server',
-        initialState: JSON.stringify(initialState)
-    }));
+    console.log(request.originalUrl);
+    generatePage(request.originalUrl)
+    .then(
+    ({ appString, initialState }) => {
+        console.log(initialState);
+        response.send(template({
+            body: appString,
+            title: 'ssr animals',
+            initialState: JSON.stringify(initialState),
+        }));
+    },
+    (error) => {
+        response.send(error);
+    });
 });
 
 app.listen(port);
