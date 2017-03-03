@@ -38,8 +38,8 @@ const examplesByLabel = R.reduce((acc, cat) => {
 
 const stripSlash = url => (url[0] === '/' ? url.substring(1) : url);
 
-const initApi = (type) => {
-    if (R.isNil(type) || (R.isNil(api) === false && R.isNil(type) === false && type === api.type)) {
+const initApi = (renderType) => {
+    if (R.isNil(renderType) || (R.isNil(api) === false && R.isNil(renderType) === false && renderType === api.renderType)) {
         return api;
     }
     const routes = [];
@@ -60,44 +60,27 @@ const initApi = (type) => {
                     createRoute(cat, { path: newPath, name: newName }), subcategories);
             }
         };
-        const path = `/${type}`; // i.e.: /csr or /ssr
-        const name = type;
-        routes.push({ label: type, path, name });
+        const path = `/${renderType}`; // i.e.: /csr or /ssr
+        const name = renderType;
+        routes.push({ label: renderType, path, name });
         createRoute(data[0], { path, name });
         routesByLabel = R.reduce((acc, route) => R.merge(acc, { [route.label]: route }), {}, routes);
     };
 
     const getBreadCrumbLinks = (name) => {
         const segments = R.compose(R.tail, R.split('.'))(name);
-        // console.log(path, stripSlash(path), segments);
-        // const label = labelByUrl[R.last(segments)];
-        if (type === 'ssr') {
-            return R.reduce((acc, val) =>
-                [`${acc[0]}/${val}`, [...acc[1], { link: `${acc[0]}/${val}`, label: val }]], ['/ssr', []], segments);
-        } else if (type === 'csr') {
-            const breadCrumbs = R.map((segment) => {
-                const l = labelByUrl[segment];
-                const r = routesByLabel[l];
-                return { ...r, label: segment };
-            }, segments);
-            // console.log(breadCrumbs);
-            return breadCrumbs;
-        }
-        return null;
+        const breadCrumbs = R.map((segment) => {
+            const l = labelByUrl[segment];
+            const r = routesByLabel[l];
+            return { ...r, label: segment };
+        }, segments);
+        // console.log(segments, breadCrumbs);
+        return breadCrumbs;
     };
 
     const getSubCategoryLinks = (path, label) => {
-        const subcategories = categoriesByLabel[label].subcategories;
-        const segments = R.compose(R.tail, R.split('/'))(stripSlash(path));
-        if (R.isNil(subcategories)) {
-            return [];
-        } else if (type === 'ssr') {
-            return R.map(val =>
-                ({ label: val.label, link: `${path}/${fixedEncodeURIComponent(val.label)}` }), subcategories);
-        } else if (type === 'csr') {
-            return R.map(val => ({ ...routesByLabel[val.label] }), subcategories);
-        }
-        return [];
+        const subcategories = categoriesByLabel[label].subcategories || [];
+        return R.map(val => ({ ...routesByLabel[val.label] }), subcategories);
     };
 
     const getLabelLastSegment = (path) => {
@@ -108,7 +91,7 @@ const initApi = (type) => {
     createRoutes();
 
     api = {
-        type,
+        renderType,
         getUrl: label => urlByLabel[label],
         getLabel: url => labelByUrl[url],
         getCategory: label => categoriesByLabel[label],
@@ -118,7 +101,6 @@ const initApi = (type) => {
         getSubCategoryLinks,
         routes,
     };
-
     return api;
 };
 

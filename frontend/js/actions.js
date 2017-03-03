@@ -18,6 +18,7 @@ export const updateStateFromRouter = (route) => {
     AppDispatcher.dispatch({
         type: 'update_router',
         payload: {
+            renderType: api.renderType,
             label,
             summary,
             examples,

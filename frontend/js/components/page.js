@@ -3,6 +3,7 @@ import R from 'ramda';
 import { updateRouter } from '../actions';
 
 const mapIndexed = R.addIndex(R.map);
+const routeNameToPath = name => R.compose(R.join('/'), R.split('.'))(name);
 
 const Page = (props) => {
     const {
@@ -11,6 +12,7 @@ const Page = (props) => {
         examples,
         breadCrumbs,
         subcategoryLinks,
+        renderType,
     } = props;
 
 
@@ -21,33 +23,26 @@ const Page = (props) => {
             <ul>{R.map(item => <li key={item}>{item}</li>, examples)}</ul>
         </div>);
     } else if (R.isNil(subcategoryLinks) === false && R.length(subcategoryLinks) > 0) {
-        list = (<ul>{R.map((data) => {
-            const p = {
-                onClick: () => { updateRouter({ name: data.name, path: data.path }); },
-            };
-            return (<li key={data.label}>
-                <a {...p}>{data.label}</a>
-            </li>);
-        }, subcategoryLinks)}</ul>);
-        // list = (<ul>{R.map(data => (<li key={data.label}>
-        //     <a href={data.link}>{data.label}</a>
-        // </li>), subcategoryLinks)}</ul>);
+        if (renderType === 'csr') {
+            list = (<ul>{R.map((data) => {
+                const p = {
+                    onClick: () => { updateRouter({ name: data.name, path: data.path }); },
+                };
+                return (<li key={data.label}>
+                    <a {...p}>{data.label}</a>
+                </li>);
+            }, subcategoryLinks)}</ul>);
+        } else if (renderType === 'ssr') {
+            list = (<ul>{R.map(data => (<li key={data.label}>
+                <a href={routeNameToPath(`/${data.name}`)}>{data.label}</a>
+            </li>), subcategoryLinks)}</ul>);
+        }
     }
 
-    // const createBreadCrumbs = () => {
-    //     const numLinks = R.length(breadCrumbs);
-    //     const crumbs = mapIndexed((data, i) => {
-    //         if (i < numLinks - 1) {
-    //             return <span key={`segment_${i}`}><a href={data.link}>{data.label}</a>/</span>;
-    //         }
-    //         return <span key={`segment_${i}`}>{data.label}</span>;
-    //     }, breadCrumbs);
-    //     return <span className="breadcrumbs">/ssr/{crumbs}</span>;
-    // };
-
-    const createBreadCrumbs = () => {
-        const numLinks = R.length(breadCrumbs);
-        const crumbs = mapIndexed((crumb, i) => {
+    let crumbs = null;
+    const numLinks = R.length(breadCrumbs);
+    if (renderType === 'csr') {
+        crumbs = mapIndexed((crumb, i) => {
             // console.log(crumb);
             const p = {
                 onClick: () => {
@@ -59,12 +54,18 @@ const Page = (props) => {
             }
             return <span key={`segment_${i}`}>{crumb.label}</span>;
         }, breadCrumbs);
-        return <span className="breadcrumbs">/csr/{crumbs}</span>;
-    };
+    } else if (renderType === 'ssr') {
+        crumbs = mapIndexed((data, i) => {
+            if (i < numLinks - 1) {
+                return <span key={`segment_${i}`}><a href={routeNameToPath(`/${data.name}`)}>{data.label}</a>/</span>;
+            }
+            return <span key={`segment_${i}`}>{data.label}</span>;
+        }, breadCrumbs);
+    }
 
     return (<div>
         <pre>
-            {createBreadCrumbs()}
+            <span className="breadcrumbs">/csr/{crumbs}</span>
         </pre>
         <h1>{label}</h1>
         <p>{summary}</p>
@@ -81,6 +82,7 @@ Page.propTypes = {
         link: PropTypes.string,
         label: PropTypes.string,
     })),
+    renderType: PropTypes.string.isRequired,
     label: PropTypes.string,
     summary: PropTypes.string,
     examples: PropTypes.arrayOf(PropTypes.string),

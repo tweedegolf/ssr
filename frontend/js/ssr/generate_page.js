@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import R from 'ramda';
 import App from '../containers/app';
 
-const generatePage = () => {
+const generatePage = (path) => {
     let i = 2;
     let s = 0;
     const initialState = {};
@@ -26,4 +26,5 @@ const generatePage = () => {
     return JSON.stringify(page);
 };
 // print html to console so the page can be streamed to Silex
-console.log(generatePage());
+// console.log(generatePage());
+esport default generatePage;

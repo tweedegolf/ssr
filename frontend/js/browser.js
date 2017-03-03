@@ -6,7 +6,7 @@ import { initApi } from './api';
 import { updateStateFromRouter } from './actions';
 
 const router = getRouter();
-const api = initApi('csr');
+const api = initApi('ssr');
 // console.log(api.routes);
 router.add(api.routes);
 router.start((error, state) => {
