@@ -11,11 +11,11 @@ import getApi from './frontend/js/api';
 
 const port = process.env.PORT || 8080;
 const app = express();
-/*
+
 const router = getRouter();
 const api = getApi();
 router.add(api.routes);
-*/
+
 // app.use(cors());
 
 app.use('*/assets/index.css', (request, response) => {
@@ -26,14 +26,8 @@ app.get('*/assets/bundle.js', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', 'bundle.js'));
 });
 
-// handle every csr other route with index.html
-app.get('/app/*', (request, response) => {
-    response.sendFile(path.join(__dirname, 'index.html'));
-});
-
-/*
-// render every ssr page
-app.get('/ssr/*', (request, response) => {
+app.get('*', (request, response) => {
+    console.log(`[ssr] ${request.originalUrl}`);
     router.clone().start(request.originalUrl, (error, state) => {
         if (error === null) {
             const breadCrumbs = api.getBreadCrumbLinks(state.name);
@@ -55,13 +49,13 @@ app.get('/ssr/*', (request, response) => {
             response.send(template({
                 body: appString,
                 title: 'classification of animals',
-                // initialState: JSON.stringify(state),
+                initialState: JSON.stringify(state),
             }));
         } else {
             response.send(error);
         }
     });
 });
-*/
+
 app.listen(port);
 console.log(`server started on port ${port}`);

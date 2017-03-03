@@ -42,10 +42,9 @@ const initApi = () => {
     const routes = [];
     let routesByLabel = {};
     const createRoutes = () => {
-        const createRoute = (category, d) => {
+        const createRoute = (category, name) => {
             const segment = fixedEncodeURIComponent(category.label);
-            const newPath = `${d.path}/${segment}`;
-            const newName = `${d.name}.${segment}`;
+            const newName = name === null ? segment : `${name}.${segment}`;
             routes.push({
                 label: category.label,
                 name: newName,
@@ -54,22 +53,21 @@ const initApi = () => {
             const subcategories = category.subcategories;
             if (R.isNil(subcategories) === false) {
                 R.map(cat =>
-                    createRoute(cat, { path: newPath, name: newName }), subcategories);
+                    createRoute(cat, newName), subcategories);
             }
         };
-        routes.push({ path: 'app', name: 'app' });
-        createRoute(data[0], { path: 'app', name: 'app' });
+        createRoute(data[0], null);
         routesByLabel = R.reduce((acc, route) => R.merge(acc, { [route.label]: route }), {}, routes);
     };
 
     const getBreadCrumbLinks = (name) => {
-        const segments = R.compose(R.tail, R.split('.'))(name);
+        const segments = R.split('.', name);
         const breadCrumbs = R.map((segment) => {
             const l = labelByUrl[segment];
             const r = routesByLabel[l];
             return { ...r, label: segment };
         }, segments);
-        console.log(segments, breadCrumbs);
+        // console.log(segments, breadCrumbs);
         return breadCrumbs;
     };
 

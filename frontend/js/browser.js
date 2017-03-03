@@ -7,9 +7,10 @@ import { updateStateFromRouter } from './actions';
 
 const router = getRouter();
 const rootElement = global.document.getElementById('root');
-console.log(getApi().routes);
+const initialState = global.window.APP_INITIAL_STATE;
+
 router.add(getApi().routes);
-router.start((error, state) => {
+router.start(initialState.path, (error, state) => {
     if (error === null) {
         updateStateFromRouter(state);
         render(<App />, rootElement);
