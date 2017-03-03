@@ -2,17 +2,22 @@ import React from 'react';
 import { render } from 'react-dom';
 import App from './containers/app';
 import getRouter from './get_router';
-import { initApi } from './api';
+import getApi from './api';
 import { updateStateFromRouter } from './actions';
 
 const router = getRouter();
-const api = initApi('csr');
-// console.log(api.routes);
-router.add(api.routes);
+const rootElement = global.document.getElementById('root');
+console.log(getApi().routes);
+router.add(getApi().routes);
 router.start((error, state) => {
     if (error === null) {
         updateStateFromRouter(state);
+        render(<App />, rootElement);
+    } else {
+        render(<div>
+            <h1>{'ERROR'}</h1>
+            <pre>{error.code}</pre>
+            <p>{`path: ${error.path}`}</p>
+        </div>, rootElement);
     }
 });
-
-render(<App />, global.document.getElementById('root'));

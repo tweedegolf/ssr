@@ -7,14 +7,15 @@ import { renderToString } from 'react-dom/server';
 import template from './frontend/js/ssr/template';
 import App from './frontend/js/containers/app_ssr';
 import getRouter from './frontend/js/get_router';
-import { initApi } from './frontend/js/api';
+import getApi from './frontend/js/api';
 
 const port = process.env.PORT || 8080;
 const app = express();
+/*
 const router = getRouter();
-const api = initApi('ssr');
+const api = getApi();
 router.add(api.routes);
-
+*/
 // app.use(cors());
 
 app.use('*/assets/index.css', (request, response) => {
@@ -26,10 +27,11 @@ app.get('*/assets/bundle.js', (request, response) => {
 });
 
 // handle every csr other route with index.html
-app.get('/csr/*', (request, response) => {
+app.get('/app/*', (request, response) => {
     response.sendFile(path.join(__dirname, 'index.html'));
 });
 
+/*
 // render every ssr page
 app.get('/ssr/*', (request, response) => {
     router.clone().start(request.originalUrl, (error, state) => {
@@ -42,19 +44,17 @@ app.get('/ssr/*', (request, response) => {
             } = api.getCategory(label) || {};
             const subcategoryLinks = api.getSubCategoryLinks(path, label);
             const props = {
-                renderType: api.renderType,
                 label,
                 summary,
                 examples,
                 breadCrumbs,
                 subcategoryLinks,
-                url: `http://localhost:8080${request.originalUrl.replace('ssr', 'csr')}`,
             };
 
             const appString = renderToString(<App {...props} />);
             response.send(template({
                 body: appString,
-                title: 'ssr animals',
+                title: 'classification of animals',
                 // initialState: JSON.stringify(state),
             }));
         } else {
@@ -62,6 +62,6 @@ app.get('/ssr/*', (request, response) => {
         }
     });
 });
-
+*/
 app.listen(port);
 console.log(`server started on port ${port}`);

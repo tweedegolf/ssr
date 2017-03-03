@@ -1,12 +1,12 @@
 import AppDispatcher from './flux/app_dispatcher';
 import getRouter from './get_router';
-import { getApi } from './api';
+import getApi from './api';
 
+const api = getApi();
 const router = getRouter();
 
 
-export const updateStateFromRouter2 = (route) => {
-    const api = getApi();
+export const updateStateFromRouter = (route) => {
     const { path, name } = route;
     const breadCrumbs = api.getBreadCrumbLinks(name);
     const label = api.getLabelLastSegment(path);
@@ -20,32 +20,11 @@ export const updateStateFromRouter2 = (route) => {
     AppDispatcher.dispatch({
         type: 'update_router',
         payload: {
-            renderType: api.renderType,
             label,
             summary,
             examples,
             breadCrumbs,
             subcategoryLinks,
-        },
-    });
-};
-
-
-export const updateStateFromRouter = (route) => {
-    AppDispatcher.dispatch({
-        type: 'update_router',
-        payload: {
-            ...route,
-        },
-    });
-};
-
-export const changeRenderType = (type) => {
-    // console.log(type, router.getState());
-    AppDispatcher.dispatch({
-        type: 'change_render_type',
-        payload: {
-            type,
         },
     });
 };

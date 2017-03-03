@@ -38,10 +38,7 @@ const examplesByLabel = R.reduce((acc, cat) => {
 
 const stripSlash = url => (url[0] === '/' ? url.substring(1) : url);
 
-const initApi = (renderType) => {
-    if (R.isNil(renderType) || (R.isNil(api) === false && R.isNil(renderType) === false && renderType === api.renderType)) {
-        return api;
-    }
+const initApi = () => {
     const routes = [];
     let routesByLabel = {};
     const createRoutes = () => {
@@ -60,10 +57,8 @@ const initApi = (renderType) => {
                     createRoute(cat, { path: newPath, name: newName }), subcategories);
             }
         };
-        const path = `/${renderType}`; // i.e.: /csr or /ssr
-        const name = renderType;
-        routes.push({ label: renderType, path, name });
-        createRoute(data[0], { path, name });
+        routes.push({ path: 'app', name: 'app' });
+        createRoute(data[0], { path: 'app', name: 'app' });
         routesByLabel = R.reduce((acc, route) => R.merge(acc, { [route.label]: route }), {}, routes);
     };
 
@@ -74,7 +69,7 @@ const initApi = (renderType) => {
             const r = routesByLabel[l];
             return { ...r, label: segment };
         }, segments);
-        // console.log(segments, breadCrumbs);
+        console.log(segments, breadCrumbs);
         return breadCrumbs;
     };
 
@@ -90,8 +85,7 @@ const initApi = (renderType) => {
 
     createRoutes();
 
-    api = {
-        renderType,
+    return {
         getUrl: label => urlByLabel[label],
         getLabel: url => labelByUrl[url],
         getCategory: label => categoriesByLabel[label],
@@ -101,12 +95,11 @@ const initApi = (renderType) => {
         getSubCategoryLinks,
         routes,
     };
-    return api;
 };
 
-const getApi = () => api;
-
-export {
-    initApi,
-    getApi,
+export default () => {
+    if (R.isNil(api)) {
+        api = initApi();
+    }
+    return api;
 };
