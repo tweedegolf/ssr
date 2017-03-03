@@ -2,7 +2,6 @@ import 'babel-polyfill';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Page from '../components/page';
-import Switcher from '../components/switcher';
 import pageDataReducer from '../reducers/page_data';
 import { getApi } from '../api';
 
@@ -38,7 +37,7 @@ class App extends Component {
     }
 
     render() {
-        return <div><Page {...this.state.pageData} /><Switcher renderType="csr" /></div>;
+        return <div><Page {...this.state.pageData} /></div>;
     }
 }
 
