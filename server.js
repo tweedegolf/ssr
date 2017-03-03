@@ -1,44 +1,64 @@
+import 'babel-polyfill';
 import express from 'express';
 import path from 'path';
 // import cors from 'cors';
-import generatePage from './frontend/js/ssr/generate_page';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
 import template from './frontend/js/ssr/template';
+import App from './frontend/js/containers/app_ssr';
+import getRouter from './frontend/js/get_router';
+import { initApi } from './frontend/js/api';
 
 const port = process.env.PORT || 8080;
 const app = express();
+const router = getRouter();
+const api = initApi('ssr');
+router.add(api.routes);
 
 // app.use(cors());
-
-// serve static assets normally
-app.use(express.static(path.join(__dirname, '')));
 
 app.use('*/assets/index.css', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', 'index.css'));
 });
 
-app.get('/csr/assets/bundle.js', (request, response) => {
+app.get('*/assets/bundle.js', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', 'bundle.js'));
 });
 
-// handle every other route with index.html
+// handle every csr other route with index.html
 app.get('/csr/*', (request, response) => {
     response.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// render every ssr page
 app.get('/ssr/*', (request, response) => {
-    console.log(request.originalUrl);
-    generatePage(request.originalUrl)
-    .then(
-    ({ appString, initialState }) => {
-        console.log(initialState);
-        response.send(template({
-            body: appString,
-            title: 'ssr animals',
-            initialState: JSON.stringify(initialState),
-        }));
-    },
-    (error) => {
-        response.send(error);
+    router.clone().start(request.originalUrl, (error, state) => {
+        if (error === null) {
+            const breadCrumbs = api.getBreadCrumbLinks(state.name);
+            const label = api.getLabelLastSegment(state.path);
+            const {
+                summary,
+                examples,
+            } = api.getCategory(label) || {};
+            const subcategoryLinks = api.getSubCategoryLinks(path, label);
+            const props = {
+                renderType: api.renderType,
+                label,
+                summary,
+                examples,
+                breadCrumbs,
+                subcategoryLinks,
+            };
+
+            const appString = renderToString(<App {...props} />);
+            response.send(template({
+                body: appString,
+                title: 'ssr animals',
+                // initialState: JSON.stringify(state),
+            }));
+        } else {
+            response.send(error);
+        }
     });
 });
 

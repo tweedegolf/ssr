@@ -4,7 +4,8 @@ import { getApi } from './api';
 
 const router = getRouter();
 
-export const updateStateFromRouter = (route) => {
+
+export const updateStateFromRouter2 = (route) => {
     const api = getApi();
     const { path, name } = route;
     const breadCrumbs = api.getBreadCrumbLinks(name);
@@ -14,7 +15,7 @@ export const updateStateFromRouter = (route) => {
         examples,
     } = api.getCategory(label) || {};
     const subcategoryLinks = api.getSubCategoryLinks(path, label);
-    console.log('[action]', label, breadCrumbs[0], subcategoryLinks[0]);
+    // console.log('[action]', label, breadCrumbs[0], subcategoryLinks[0]);
 
     AppDispatcher.dispatch({
         type: 'update_router',
@@ -25,6 +26,16 @@ export const updateStateFromRouter = (route) => {
             examples,
             breadCrumbs,
             subcategoryLinks,
+        },
+    });
+};
+
+
+export const updateStateFromRouter = (route) => {
+    AppDispatcher.dispatch({
+        type: 'update_router',
+        payload: {
+            ...route,
         },
     });
 };
