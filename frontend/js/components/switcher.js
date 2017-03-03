@@ -9,20 +9,16 @@ const Switcher = (props) => {
         right: 10,
         top: 10,
     };
+    const p = {
+        onClick: () => {
+            global.window.location.href = global.window.location.href.replace('csr', 'ssr');
+        },
+    };
+
     return (<div className="switcher" style={style}>
-        <a href={props.url}><label htmlFor="csr">csr<input
-          name="csr"
-          type="checkbox"
-          checked={props.renderType === 'csr'}
-          onChange={() => {}}
-        /></label></a>
-        <label htmlFor="ssr">ssr<input
-          name="ssr"
-          type="checkbox"
-          checked={props.renderType === 'ssr'}
-          onChange={() => { global.window.location.href = global.window.location.href.replace('csr', 'ssr'); }}
-          // onChange={() => { changeRenderType('ssr'); }}
-        /></label>
+        <a href={props.url} className={props.renderType === 'csr' ? 'selected' : 'active'}>csr</a>
+        &nbsp;|&nbsp;
+        <a {...p} className={props.renderType === 'ssr' ? 'selected' : 'active'}>ssr</a>
     </div>);
 };
 

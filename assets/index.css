@@ -7,9 +7,14 @@ a {
     text-decoration: underline;
 }
 
-.switcher > a {
-    text-decoration: none;
+.switcher > .selected{
+    text-decoration: none !important;
     color: black;
+    cursor: default;
+}
+
+.switcher > a.active{
+    cursor: pointer;
 }
 
 // .breadcrumbs > span > a {
