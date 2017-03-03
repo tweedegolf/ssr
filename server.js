@@ -48,6 +48,7 @@ app.get('/ssr/*', (request, response) => {
                 examples,
                 breadCrumbs,
                 subcategoryLinks,
+                url: `http://localhost:8080${request.originalUrl.replace('ssr', 'csr')}`,
             };
 
             const appString = renderToString(<App {...props} />);

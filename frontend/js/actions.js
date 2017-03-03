@@ -40,6 +40,16 @@ export const updateStateFromRouter = (route) => {
     });
 };
 
+export const changeRenderType = (type) => {
+    // console.log(type, router.getState());
+    AppDispatcher.dispatch({
+        type: 'change_render_type',
+        payload: {
+            type,
+        },
+    });
+};
+
 export const updateRouter = (route) => {
     // console.log('state:', router.getState());
     // console.log('route:', route);

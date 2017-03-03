@@ -7,7 +7,12 @@ a {
     text-decoration: underline;
 }
 
+.switcher > a {
+    text-decoration: none;
+    color: black;
+}
+
 // .breadcrumbs > span > a {
-//     // text-decoration: none;
+//     text-decoration: none;
 //     color: black;
 // }
