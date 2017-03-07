@@ -1,88 +1,80 @@
 <?php
-require_once __DIR__.'/./server/vendor/autoload.php';
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+require_once __DIR__.'/./vendor/autoload.php';
+use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Component\Process\Process;
+// use Symfony\Component\Process\Exception\ProcessFailedException;
 
+/*
 $loader = new Twig_Loader_Filesystem( __DIR__.'/./twig');
 $twig = new Twig_Environment($loader, array(
     // 'cache' =>  __DIR__.'/./twig/cache',
     'autoescape' => false,
 ));
-
-function generateHTML() {
-    // $path = __DIR__.'/../frontend/generate.js';
-    $process = new Process('./node_modules/.bin/babel-node ./frontend/js/ssr/generate-html.js');
-    $process->run();
-
-    if (!$process->isSuccessful()) {
-        throw new ProcessFailedException($process);
-    }
-    return $process->getOutput();
-}
-
-function generateJSON() {
-    // $path = __DIR__.'/../frontend/generate.js';
-    $process = new Process('./node_modules/.bin/babel-node ./frontend/js/ssr/generate-json.js');
-    $process->run();
-
-    if (!$process->isSuccessful()) {
-        throw new ProcessFailedException($process);
-    }
-    return json_decode($process->getOutput(), true);
-}
-
-function generatePage($segment0 = 'animals', $segment1 = 'NA', $segment2 = 'NA', $segment3 = 'NA') {
-    // echo "$segment0 $segment1 $segment2 $segment3";
-    $process = new Process("./node_modules/.bin/babel-node ./frontend/js/ssr/generate-page.js $segment0 $segment1 $segment2 $segment3");
-    $process->run();
-
-    if (!$process->isSuccessful()) {
-        throw new ProcessFailedException($process);
-    }
-    return json_decode($process->getOutput(), true);
-}
+*/
 
 $app = new Silex\Application();
 
-// $app->get('/', function () use ($app, $twig) {
-//     return $twig->render('index.html');
+// $app->get('/assets/{file}', function ($file) use ($app) {
+//     return $app->sendFile(__DIR__.'/assets/'.$file);
 // });
 
-// $app->get('/hello/{name}', function ($name) use ($app) {
-//     return 'Hello '.$app->escape($name);
-// });
+$app->get('/{segment0}', function ($segment0) use ($app) {
+    $client = new \GuzzleHttp\Client();
+    $path = "$segment0";
+    $res = $client->request('GET', "http://localhost:3000/$path");
+    echo $res->getBody();
+})
+->value('segment0', 'animals');
 
-
-// csr
-$app->get('/csr', function ($segment0) use ($app, $twig) {
-    return $twig->render('index.html');
+$app->get('/{segment0}/{segment1}', function ($segment0, $segment1) use ($app) {
+    if ($segment0 === 'assets') {
+        return $app->sendFile(__DIR__.'/assets/'.$segment1);
+    } else {
+        $client = new \GuzzleHttp\Client();
+        $path = "$segment0/$segment1";
+        $res = $client->request('GET', "http://localhost:3000/$path");
+        echo $res->getBody();
+    }
 });
 
-// ssr
-$app->get('/ssr/{segment0}', function ($segment0) use ($app, $twig) {
-    return $twig->render('test1.html', generatePage($segment0));
+$app->get('/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app) {
+    $client = new \GuzzleHttp\Client();
+    $path = "$segment0/$segment1/$segment2";
+    $res = $client->request('GET', "http://localhost:3000/$path");
+    echo $res->getBody();
 });
 
-$app->get('/ssr/{segment0}/{segment1}', function ($segment0, $segment1) use ($app, $twig) {
-    return $twig->render('test1.html', generatePage($segment0, $segment1));
+$app->get('/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app) {
+    $client = new \GuzzleHttp\Client();
+    $path = "$segment0/$segment1/$segment2/$segment3";
+    $res = $client->request('GET', "http://localhost:3000/$path");
+    echo $res->getBody();
 });
 
-$app->get('/ssr/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app, $twig) {
-    return $twig->render('test1.html', generatePage($segment0, $segment1, $segment2));
-});
+/*
+// why doesn't this work?
+$app->get('/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app) {
+    $client = new \GuzzleHttp\Client();
+    $path = "/$segment0";
+    if ($segment1 != 'segment1'){
+        $path .= "/$segment1";
+    }
+    if ($segment2 != 'segment1'){
+        $path .= "/$segment2";
+    }
+    // $res = $client->request('GET', 'http://localhost:3000/{path}');
+    // echo $res->getBody();
+    echo $path;
 
-$app->get('/ssr/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app, $twig) {
-    return $twig->render('test1.html', generatePage($segment0, $segment1, $segment2, $segment3));
-});
-
-// test json
-// $app->get('/ssr/json', function () use ($app, $twig) {
-//     return  $twig->render('test1.html', generateJSON());
-// });
-
-// // test html
-// $app->get('/ssr/html', function () use ($app) {
-//     return generateHTML();
-// });
+    // $request = new \GuzzleHttp\Psr7\Request('GET', 'http://httpbin.org/ip');
+    // $promise = $client->sendAsync($request)->then(function ($response) {
+    //     return 'I completed! ' . $response->getBody();
+    // });
+    // $promise->wait();
+})
+->value('segment0', 'animals')
+->value('segment1', 'segment1')
+->value('segment2', 'segment2');
+*/
 
 $app->run();

@@ -1,6 +1,8 @@
 assets/bundle.js
 composer.lock
+composer.phar
 node_modules
+vendor/
 server/
 twig/cache/*
 npm-debug.log

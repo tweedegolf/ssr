@@ -34,7 +34,7 @@ const Page = (props) => {
 
     return (<div>
         <pre>
-            <span className="breadcrumbs">/csr/{crumbs}</span>
+            <span className="breadcrumbs">/{crumbs}</span>
         </pre>
         <h1>{label}</h1>
         <p>{summary}</p>

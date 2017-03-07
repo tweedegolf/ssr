@@ -17,7 +17,7 @@ class App extends Component {
     }
 
     render() {
-        console.log(this.state);
+        // console.log('render', this.state);
         return <div><Page {...this.state.pageData} /></div>;
     }
 }
