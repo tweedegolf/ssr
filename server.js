@@ -16,8 +16,9 @@ const router = getRouter();
 const api = getApi();
 router.add(api.routes);
 
-// app.use(cors());
-
+app.use('*/assets/index.css', (request, response) => {
+    response.sendFile(path.join(__dirname, 'assets', 'index.css'));
+});
 app.use('*/assets/*', (request, response) => {
     console.log(`[express]${request.originalUrl}`);
     let file = request.originalUrl;
