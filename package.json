@@ -17,6 +17,7 @@
     "react",
     "react server",
     "reactjs",
+    "router5",
     "silex"
   ],
   "devDependencies": {
@@ -44,10 +45,7 @@
     "ramda": "0.23.0",
     "react": "^15.2.0",
     "react-dom": "^15.2.0",
-    "react-redux": "5.0.3",
     "react-router5": "4.0.1",
-    "redux": "3.6.0",
-    "redux-logger": "2.8.1",
     "router5": "4.5.1"
   }
 }

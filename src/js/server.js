@@ -15,9 +15,7 @@ const router = getRouter();
 const api = getApi();
 router.add(api.routes);
 
-app.use('*/assets/index.css', (request, response) => {
-    response.sendFile(path.join(__dirname, 'assets', 'index.css'));
-});
+// resolve all requests to files in the build folder statically (bundle.js, index.css)
 app.use('*/assets/*', (request, response) => {
     console.log(`[express]${request.originalUrl}`);
     let file = request.originalUrl;
@@ -25,6 +23,7 @@ app.use('*/assets/*', (request, response) => {
     response.sendFile(path.join(__dirname, 'assets', file));
 });
 
+// and all other requests return a page rendered on the server
 app.get('*', (request, response) => {
     console.log(`[express]${request.originalUrl}`);
     router.clone().start(request.originalUrl, (error, state) => {
