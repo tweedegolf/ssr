@@ -14,11 +14,13 @@ $twig = new Twig_Environment($loader, array(
 
 $app = new Silex\Application();
 
-// $app->get('/assets/{file}', function ($file) use ($app) {
-//     return $app->sendFile(__DIR__.'/assets/'.$file);
-// });
+$app->get('/assets/{file}', function ($file) use ($app) {
+    error_log("[assets] $file \n", 3, '/home/abudaan/workspace/ssr/php.log');
+    return $app->sendFile(__DIR__.'/assets/'.$file);
+});
 
 $app->get('/{segment0}', function ($segment0) use ($app) {
+    error_log("[segment0] $segment0 \n", 3, '/home/abudaan/workspace/ssr/php.log');
     $client = new \GuzzleHttp\Client();
     $path = "$segment0";
     $res = $client->request('GET', "http://localhost:3000/$path");
@@ -27,17 +29,19 @@ $app->get('/{segment0}', function ($segment0) use ($app) {
 ->value('segment0', 'animals');
 
 $app->get('/{segment0}/{segment1}', function ($segment0, $segment1) use ($app) {
-    if ($segment0 === 'assets') {
-        return $app->sendFile(__DIR__.'/assets/'.$segment1);
-    } else {
+    error_log("[segment0+1] $segment0 | $segment1 \n", 3, '/home/abudaan/workspace/ssr/php.log');
+    // if ($segment0 === 'assets') {
+    //     return $app->sendFile(__DIR__.'/assets/'.$segment1);
+    // } else {
         $client = new \GuzzleHttp\Client();
         $path = "$segment0/$segment1";
         $res = $client->request('GET', "http://localhost:3000/$path");
         echo $res->getBody();
-    }
+    // }
 });
 
 $app->get('/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app) {
+    error_log("[segment0+1+2] $segment0 | $segment1 | $segment2 \n", 3, '/home/abudaan/workspace/ssr/php.log');
     $client = new \GuzzleHttp\Client();
     $path = "$segment0/$segment1/$segment2";
     $res = $client->request('GET', "http://localhost:3000/$path");
@@ -45,6 +49,7 @@ $app->get('/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $
 });
 
 $app->get('/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app) {
+    error_log("[segment0+1+2+3] $segment0 | $segment1 | $segment2 | $segment3 \n", 3, '/home/abudaan/workspace/ssr/php.log');
     $client = new \GuzzleHttp\Client();
     $path = "$segment0/$segment1/$segment2/$segment3";
     $res = $client->request('GET', "http://localhost:3000/$path");

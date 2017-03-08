@@ -5,4 +5,5 @@ node_modules
 vendor/
 server/
 twig/cache/*
+php.log
 npm-debug.log
