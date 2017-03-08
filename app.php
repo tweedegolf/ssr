@@ -14,6 +14,7 @@ $twig = new Twig_Environment($loader, array(
 
 $app = new Silex\Application();
 
+// statically serve javascript and css
 $app->get('/assets/{file}', function ($file) use ($app) {
     error_log("[assets] $file \n", 3, __DIR__.'/php.log');
     // return $app->sendFile(__DIR__.'/assets/'.$file);
@@ -30,6 +31,7 @@ $app->get('/assets/{file}', function ($file) use ($app) {
     return $app->stream($stream, 200, array('Content-Type' => $contentType));
 });
 
+// pass all other requests on to node server
 $app->get('/{segment0}', function ($segment0) use ($app) {
     $path = "$segment0";
     error_log("[segments] $path \n", 3, __DIR__.'/php.log');

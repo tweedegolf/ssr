@@ -1,3 +1,5 @@
+// The node server uses this template to serve the html page as string;
+// the body variable will contain the React application rendered as a string
 export default ({ body, title, initialState }) => (`
     <!DOCTYPE html>
     <html>
@@ -13,4 +15,3 @@ export default ({ body, title, initialState }) => (`
         <script src="/assets/bundle.js"></script>
     </html>
 `);
-
