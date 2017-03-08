@@ -1,16 +1,16 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 use Symfony\Component\HttpFoundation\Response;
-// use Symfony\Component\Process\Process;
-// use Symfony\Component\Process\Exception\ProcessFailedException;
 
-/*
-$loader = new Twig_Loader_Filesystem( __DIR__.'/./twig');
+$useTwig = getenv('TWIG') == 1;
+error_log("[twig] $useTwig \n", 3, __DIR__.'/php.log');
+
+$loader = new Twig_Loader_Filesystem( __DIR__.'/twig');
 $twig = new Twig_Environment($loader, array(
     // 'cache' =>  __DIR__.'/./twig/cache',
     'autoescape' => false,
 ));
-*/
+
 
 $app = new Silex\Application();
 
@@ -41,29 +41,42 @@ $app->get('/{segment0}', function ($segment0) use ($app) {
 })
 ->value('segment0', 'animals');
 
-$app->get('/{segment0}/{segment1}', function ($segment0, $segment1) use ($app) {
-    $path = "$segment0/$segment1";
-    error_log("[segments] $path \n", 3, __DIR__.'/php.log');
-    $client = new \GuzzleHttp\Client();
-    $res = $client->request('GET', "http://localhost:3000/$path");
-    return $res->getBody();
-});
+$app->get('/{segment0}/{segment1}',
+    function ($segment0, $segment1) use ($app, $twig, $useTwig) {
+        $path = "$segment0/$segment1";
+        error_log("[segments] $path \n", 3, __DIR__.'/php.log');
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', "http://localhost:3000/$path");
+        if ($useTwig) {
+            return $twig->render('page.html',json_decode($res->getBody(), true));
+        }
+        return $res->getBody();
+    });
 
-$app->get('/{segment0}/{segment1}/{segment2}', function ($segment0, $segment1, $segment2) use ($app) {
-    $path = "$segment0/$segment1/$segment2";
-    error_log("[segments] $path \n", 3, __DIR__.'/php.log');
-    $client = new \GuzzleHttp\Client();
-    $res = $client->request('GET', "http://localhost:3000/$path");
-    return $res->getBody();
-});
+$app->get('/{segment0}/{segment1}/{segment2}',
+    function ($segment0, $segment1, $segment2) use ($app, $twig, $useTwig) {
+        $path = "$segment0/$segment1/$segment2";
+        error_log("[segments] $path \n", 3, __DIR__.'/php.log');
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', "http://localhost:3000/$path");
+        if ($useTwig) {
+            return $twig->render('page.html',json_decode($res->getBody(), true));
+        }
+        return $res->getBody();
+    });
 
-$app->get('/{segment0}/{segment1}/{segment2}/{segment3}', function ($segment0, $segment1, $segment2, $segment3) use ($app) {
-    $path = "$segment0/$segment1/$segment2/$segment3";
-    error_log("[segments] $path \n", 3, __DIR__.'/php.log');
-    $client = new \GuzzleHttp\Client();
-    $res = $client->request('GET', "http://localhost:3000/$path");
-    return $res->getBody();
-});
+$app->get('/{segment0}/{segment1}/{segment2}/{segment3}',
+    function ($segment0, $segment1, $segment2, $segment3) use ($app, $twig, $useTwig) {
+        $path = "$segment0/$segment1/$segment2/$segment3";
+        error_log("[segments] $path \n", 3, __DIR__.'/php.log');
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', "http://localhost:3000/$path");
+        if ($useTwig) {
+            return $twig->render('page.html',json_decode($res->getBody(), true));
+        }
+        return $res->getBody();
+    });
+
 
 /*
 // why doesn't this work?

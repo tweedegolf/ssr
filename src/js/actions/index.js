@@ -29,9 +29,10 @@ export const updateStateFromRouter = (route) => {
     });
 };
 
+// Called when the user clicks on a Link component; first the router
+// transitions to the new route, then an action will be dispatched to
+// update the state of the Page component.
 export const updateRouter = (route) => {
-    // console.log('state:', router.getState());
-    // console.log('route:', route);
     router.navigate(route.name, () => {
         updateStateFromRouter(route);
     });

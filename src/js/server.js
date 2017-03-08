@@ -15,7 +15,7 @@ const router = getRouter();
 const api = getApi();
 router.add(api.routes);
 
-// render a page with serverside React
+// render the page with serverside React
 app.get('*', (request, response) => {
     console.log(`[express]${request.originalUrl}`);
     router.clone().start(request.originalUrl, (error, state) => {
@@ -36,11 +36,19 @@ app.get('*', (request, response) => {
             };
 
             const appString = renderToString(<App {...props} />);
-            response.send(template({
-                body: appString,
-                title: 'classification of animals',
-                initialState: JSON.stringify(state),
-            }));
+            if (process.env.TWIG === '1') {
+                response.send({
+                    body: appString,
+                    title: '[twig] classification of animals',
+                    initialState: JSON.stringify(state),
+                });
+            } else {
+                response.send(template({
+                    body: appString,
+                    title: 'classification of animals',
+                    initialState: JSON.stringify(state),
+                }));
+            }
         } else {
             response.send(error);
         }
@@ -48,4 +56,4 @@ app.get('*', (request, response) => {
 });
 
 app.listen(port);
-console.log(`server started on port ${port}`);
+console.log(`server started on port ${port} | render as json: ${process.env.TWIG === '1'}`);

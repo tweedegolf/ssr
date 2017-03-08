@@ -7,6 +7,8 @@
     "bn": "babel-node",
     "silex": "php -S localhost:8080",
     "express": "babel-node ./src/js/server.js",
+    "silex_twig": "TWIG=1 php -S localhost:8080",
+    "express_twig": "TWIG=1 babel-node ./src/js/server.js",
     "watch": "watchify ./src/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
   },
   "repository": {
