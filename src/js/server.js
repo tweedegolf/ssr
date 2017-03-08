@@ -1,13 +1,12 @@
 import 'babel-polyfill';
 import express from 'express';
 import path from 'path';
-// import cors from 'cors';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import template from './frontend/js/ssr/template';
-import App from './frontend/js/containers/app_ssr';
-import getRouter from './frontend/js/get_router';
-import getApi from './frontend/js/api';
+import template from './ssr/template';
+import App from './containers/app_ssr';
+import getRouter from './misc/get_router';
+import getApi from './misc/api';
 
 const port = process.env.PORT || 3000;
 const app = express();

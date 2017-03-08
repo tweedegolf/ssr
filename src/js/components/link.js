@@ -1,3 +1,6 @@
+// Clickable component that works both when javascript is enabled and disabled in the browser;
+// in the former case the action updateRouter is triggered, in the latter case the component is
+// a plain <a> tag that navigates to a new page that will be rendered on the server.
 import React, { PropTypes } from 'react';
 import R from 'ramda';
 import { updateRouter } from '../actions';

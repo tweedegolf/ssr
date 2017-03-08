@@ -4,6 +4,13 @@ import Link from './link';
 
 const mapIndexed = R.addIndex(R.map);
 
+// Renders category data in a simple page. There are 2 ways of representations:
+// - the page shows a category that has subcategories:
+//   a list of the subcategories is shown
+// - the page shows a category that has no subcategories:
+//   a list of animals belonging to this category is shown
+// In both cases the page renders a breadcrumb navigation
+// mapping out the hierarchical structure of the categories.
 const Page = (props) => {
     const {
         label,

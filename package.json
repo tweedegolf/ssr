@@ -4,11 +4,10 @@
   "description": "React server side rendering with Silex",
   "main": "index.js",
   "scripts": {
-    "server": "php -S localhost:8080 -t / app.php",
-    "test": "babel-node ./frontend/generate",
     "bn": "babel-node",
-    "express": "babel-node ./server.js",
-    "watch": "watchify ./frontend/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
+    "silex": "php -S localhost:8080",
+    "express": "babel-node ./src/js/server.js",
+    "watch": "watchify ./src/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
   },
   "repository": {
     "type": "git",

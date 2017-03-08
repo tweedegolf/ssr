@@ -1,11 +1,11 @@
-import AppDispatcher from './flux/app_dispatcher';
-import getRouter from './get_router';
-import getApi from './api';
+import AppDispatcher from '../flux/app_dispatcher';
+import getRouter from '../misc/get_router';
+import getApi from '../misc/api';
 
 const api = getApi();
 const router = getRouter();
 
-
+// creates the new state for the Page component from the current route
 export const updateStateFromRouter = (route) => {
     const { path, name } = route;
     const breadCrumbs = api.getBreadCrumbLinks(name);

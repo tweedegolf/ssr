@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+// main component for clientside rendering; props are passed in by the file browser.js
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Page from '../components/page';

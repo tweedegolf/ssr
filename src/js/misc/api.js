@@ -1,12 +1,14 @@
 import R from 'ramda';
 import data from './data';
-import { fixedEncodeURIComponent } from './util/convert';
+import { fixedEncodeURIComponent } from '../util/convert';
 
 let api = null;
 
+// invert object: {key: value} -> {value: key}
 const invertKeyValue = obj => R.reduce((acc, key) =>
     R.merge(acc, { [obj[key]]: key }), {}, R.keys(obj));
 
+// recursively loop over all categories and subcategories
 const getCategories = categories => R.map((cat) => {
     const subs = cat.subcategories;
     if (R.isNil(subs) === false) {
@@ -15,9 +17,12 @@ const getCategories = categories => R.map((cat) => {
     return cat;
 }, categories);
 
+// getCategories returns nested arrays so flatten them:
+// [val1, val2, [val3, val4, [val5, val6]]] -> [val1, val2, val3, val4, val5, val6]
 const categories = R.flatten(getCategories(data));
 const labels = R.map(cat => cat.label, categories);
 
+// create segments from the category names to populate the browser's address bar
 const urlByLabel = R.reduce((acc, val) =>
     R.merge(acc, { [val]: fixedEncodeURIComponent(val) }), {}, labels);
 
@@ -38,6 +43,8 @@ const examplesByLabel = R.reduce((acc, cat) => {
 
 const stripSlash = url => (url[0] === '/' ? url.substring(1) : url);
 
+// Create routes for all nested categories and setup functions to
+// access data easily based on the current route
 const initApi = () => {
     const routes = [];
     let routesByLabel = {};
@@ -95,6 +102,7 @@ const initApi = () => {
     };
 };
 
+// singleton; we only need to setup the api once
 export default () => {
     if (R.isNil(api)) {
         api = initApi();
