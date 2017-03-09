@@ -22,7 +22,7 @@ The following commands are available to run the prototype:
 
 The application is a simple tree that represents the classification of animals:
 
-![](classification-of-animals.png)
+![](classification-of-animals.png =250x)
 
 You can click through the categories and access specific categories directly via the breadcrumb trail or by using a direct url, see below.
 
