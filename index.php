@@ -32,11 +32,14 @@ $app->get('/assets/{file}', function ($file) use ($app) {
 });
 
 // pass all other requests on to node server
-$app->get('/{segment0}', function ($segment0) use ($app) {
+$app->get('/{segment0}', function ($segment0) use ($app, $twig, $useTwig) {
     $path = "$segment0";
     error_log("[segments] $path \n", 3, __DIR__.'/php.log');
     $client = new \GuzzleHttp\Client();
     $res = $client->request('GET', "http://localhost:3000/$path");
+    if ($useTwig) {
+        return $twig->render('page.html',json_decode($res->getBody(), true));
+    }
     return $res->getBody();
 })
 ->value('segment0', 'animals');

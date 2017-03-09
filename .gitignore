@@ -1,4 +1,5 @@
 assets/bundle.js
+assets/bundle.js.map
 composer.lock
 composer.phar
 node_modules

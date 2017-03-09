@@ -9,7 +9,11 @@
     "express": "babel-node ./src/js/server.js",
     "silex_twig": "TWIG=1 php -S localhost:8080",
     "express_twig": "TWIG=1 babel-node ./src/js/server.js",
-    "watch": "watchify ./src/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose"
+    "watch": "watchify ./src/js/browser.js -t [ babelify ] -o ./assets/bundle.js --debug --verbose",
+    "build": "NODE_ENV=production browserify ./src/js/browser.js -t babelify --out-file ./assets/bundle.js --debug | exorcist ./assets/bundle.js.map > ./assets/bundle.js",
+    "build_min": "NODE_ENV=production browserify ./src/js/browser.js -t babelify -g uglifyify --out-file ./assets/bundle.js --debug | exorcist ./assets/bundle.js.map > ./assets/bundle.js",
+    "start": "npm run build && npm run express & npm run silex",
+    "start_twig": "npm run build && npm run express_twig & npm run silex_twig"
   },
   "repository": {
     "type": "git",
@@ -24,9 +28,8 @@
   ],
   "devDependencies": {
     "babel-cli": "6.23.0",
-    "babel-core": "^6.10.4",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-core": "6.23.1",
+    "babel-preset-env": "1.2.1",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "6.22.0",
     "babelify": "7.3.0",
@@ -36,7 +39,9 @@
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jsx-a11y": "4.0.0",
     "eslint-plugin-react": "6.10.0",
+    "exorcist": "0.4.0",
     "node-sass": "^3.8.0",
+    "uglifyify": "3.0.4",
     "watchify": "3.9.0"
   },
   "dependencies": {

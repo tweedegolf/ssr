@@ -56,4 +56,5 @@ app.get('*', (request, response) => {
 });
 
 app.listen(port);
-console.log(`server started on port ${port} | render as json: ${process.env.TWIG === '1'}`);
+const type = process.env.TWIG === '1' ? 'json' : 'html';
+console.log(`server started on port ${port} | render as ${type}`);
