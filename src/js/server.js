@@ -40,13 +40,13 @@ app.get('*', (request, response) => {
                 response.send({
                     body: appString,
                     title: '[twig] classification of animals',
-                    initialState: JSON.stringify(state),
+                    // initialState: JSON.stringify(state),
                 });
             } else {
                 response.send(template({
                     body: appString,
                     title: 'classification of animals',
-                    initialState: JSON.stringify(state),
+                    // initialState: JSON.stringify(state),
                 }));
             }
         } else {

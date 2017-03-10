@@ -1,4 +1,21 @@
 // index.html template; properties will be set when rendered on the server
+export default ({ body, title }) => (`
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <title>${title}</title>
+            <link rel="stylesheet" href="/assets/index.css" />
+        </head>
+
+        <body>
+            <div id="root">${body}</div>
+        </body>
+        <script src="/assets/bundle.js"></script>
+    </html>
+`);
+
+
+/*
 export default ({ body, title, initialState }) => (`
     <!DOCTYPE html>
     <html>
@@ -14,4 +31,4 @@ export default ({ body, title, initialState }) => (`
         <script src="/assets/bundle.js"></script>
     </html>
 `);
-
+*/

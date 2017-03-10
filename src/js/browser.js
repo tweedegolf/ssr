@@ -8,11 +8,10 @@ import getApi from './misc/api';
 import { updateStateFromRouter } from './actions';
 
 const router = getRouter();
-const initialState = global.window.APP_INITIAL_STATE;
 
 router.add(getApi().routes);
 
-router.start(initialState.path, (error, state) => {
+router.start((error, state) => {
     let jsx = null;
     if (error === null) {
         updateStateFromRouter(state);
