@@ -59,6 +59,8 @@ Because our application is url-driven, we set the initial state of the applicati
 
 This is accomplished by using a global variable that holds the initial state. You can see this in `src/js/browser.js`; the path of the initial server state is fed to Router5 so it can update the Flux reducer that reduces the state of the Page. Reversely you can see in `src/js/server.js` and `src/js/misc/template` how the initial state gets added to the global scope.
 
+[Update Aug 1st 2017] Because in this application the state and the url are basically the same, we don't need to set a global variable that holds the initial state; we can simply use the url to set the initial state.
+
 
 #### Using a javascript or a Twig template
 
